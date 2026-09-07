@@ -1,8 +1,17 @@
 <script setup lang="ts">
+import { nextTick, ref, watch } from "vue";
 import { fields, useDealCalculator } from "../composables/useDealCalculator";
 
 const { deal, results, isAnalyzing, updateField, resetDeal, analyzeDeal } = useDealCalculator();
+const resultsCard = ref<HTMLElement | null>(null);
 const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+
+watch(isAnalyzing, async (analyzing, wasAnalyzing) => {
+  if (!analyzing && wasAnalyzing) {
+    await nextTick();
+    resultsCard.value?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
 </script>
 
 <template>
@@ -13,7 +22,7 @@ const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "cur
       <p>Enter a few property details and turn a listing into a clear investment snapshot.</p>
     </div>
     <div class="calculator-shell">
-      <div class="results-card" aria-live="polite">
+      <div ref="resultsCard" class="results-card" aria-live="polite">
         <div class="results-topline"><span>Investment snapshot</span><span class="status-dot"><i></i> Live analysis</span></div>
         <div class="score-area">
           <div class="score-gauge" :style="{ '--score': `${results.score * 3.6}deg` }">
