@@ -13,6 +13,23 @@ const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "cur
       <p>Enter a few property details and turn a listing into a clear investment snapshot.</p>
     </div>
     <div class="calculator-shell">
+      <div class="results-card" aria-live="polite">
+        <div class="results-topline"><span>Investment snapshot</span><span class="status-dot"><i></i> Live analysis</span></div>
+        <div class="score-area">
+          <div class="score-gauge" :style="{ '--score': `${results.score * 3.6}deg` }">
+            <div class="score-inner"><strong>{{ results.score }}</strong><span>/ 100</span></div>
+          </div>
+          <div class="score-copy"><span>Overall Deal Score</span><h3>{{ results.score >= 75 ? "Strong opportunity" : results.score >= 55 ? "Worth a closer look" : "Proceed with caution" }}</h3><p>Based on your projected return, coverage, and cash flow.</p></div>
+        </div>
+        <div class="results-grid">
+          <div class="result highlight"><span>Monthly Cash Flow</span><strong>{{ currency(results.cashFlow) }}</strong><small>After debt service</small></div>
+          <div class="result"><span>Net Operating Income</span><strong>{{ currency(results.annualNoi) }}</strong><small>Per year</small></div>
+          <div class="result"><span>Cap Rate</span><strong>{{ results.capRate.toFixed(2) }}%</strong><small>Unlevered return</small></div>
+          <div class="result"><span>Cash-on-Cash</span><strong>{{ results.coc.toFixed(2) }}%</strong><small>Annual return</small></div>
+          <div class="result"><span>DSCR</span><strong>{{ results.dscr.toFixed(2) }}x</strong><small>{{ results.dscr >= 1.25 ? "Healthy coverage" : "Below target" }}</small></div>
+        </div>
+        <p class="disclaimer">Estimates are for preliminary analysis and are not financial advice.</p>
+      </div>
       <div class="calculator-inputs">
         <div class="card-heading">
           <div><span class="step-number">01</span><div><h3>Property details</h3><p>Start with the fundamentals</p></div></div>
@@ -32,24 +49,6 @@ const currency = (value: number) => new Intl.NumberFormat("en-US", { style: "cur
           <template v-if="isAnalyzing"><span class="spinner"></span> Analyzing your deal…</template>
           <template v-else>Analyze Deal <span>→</span></template>
         </button>
-      </div>
-      <div class="results-card" aria-live="polite">
-        <div class="results-topline"><span>Investment snapshot</span><span class="status-dot"><i></i> Live analysis</span></div>
-        <div class="score-area">
-          <div class="score-gauge" :style="{ '--score': `${results.score * 3.6}deg` }">
-            <div class="score-inner"><strong>{{ results.score }}</strong><span>/ 100</span></div>
-          </div>
-          <div class="score-copy"><span>Overall Deal Score</span><h3>{{ results.score >= 75 ? "Strong opportunity" : results.score >= 55 ? "Worth a closer look" : "Proceed with caution" }}</h3><p>Based on your projected return, coverage, and cash flow.</p></div>
-        </div>
-        <div class="results-grid">
-          <div class="result highlight"><span>Monthly Cash Flow</span><strong>{{ currency(results.cashFlow) }}</strong><small>After debt service</small></div>
-          <div class="result"><span>Net Operating Income</span><strong>{{ currency(results.annualNoi) }}</strong><small>Per year</small></div>
-          <div class="result"><span>Cap Rate</span><strong>{{ results.capRate.toFixed(2) }}%</strong><small>Unlevered return</small></div>
-          <div class="result"><span>Cash-on-Cash</span><strong>{{ results.coc.toFixed(2) }}%</strong><small>Annual return</small></div>
-          <div class="result"><span>DSCR</span><strong>{{ results.dscr.toFixed(2) }}x</strong><small>{{ results.dscr >= 1.25 ? "Healthy coverage" : "Below target" }}</small></div>
-        </div>
-        <button class="save-button" type="button">Save this deal <span>＋</span></button>
-        <p class="disclaimer">Estimates are for preliminary analysis and are not financial advice.</p>
       </div>
     </div>
   </section>

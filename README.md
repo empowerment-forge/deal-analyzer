@@ -1,6 +1,6 @@
-# Empowerment Forge Deal Calculator
+# Rental Property Analyzer
 
-Vue 3 + Vite + TypeScript migration of The Empowerment Forge rental-property deal calculator.
+Vue 3 + Vite + TypeScript rental-property deal calculator.
 
 ## Development
 
@@ -19,10 +19,10 @@ The production build is generated in `dist/` and can be served with `npm run pre
 - `src/components/DealCalculator.vue` — calculator presentation and interactions
 - `src/composables/useDealCalculator.ts` — calculator state, formulas, and derived results
 - `src/assets/styles.css` — preserved handcrafted responsive design
-- `public/` — logo, favicon, and local Geist fonts
+- `public/` — local fonts and static assets
 - `tests/calculator.test.ts` — calculator business-logic tests
 
-The “Save this deal” and “Sign In” controls remain placeholders from the recovered prototype. Persistence, accounts, subscriptions, payments, and a database are intentionally not implemented.
+The public release is intentionally calculator-only: it works without registration and does not include persistence, accounts, subscriptions, payments, a database, or AI functionality. Saved deals and other account-based features may be added in a future phase.
 
 ## Validation
 

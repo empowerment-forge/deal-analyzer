@@ -26,5 +26,5 @@
     "vue-tsc": "^2.2.12"
   },
   "type": "module",
-  "displayName": "Empowerment Forge"
+  "displayName": "Rental Property Analyzer"
 }

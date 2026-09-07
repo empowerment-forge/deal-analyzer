@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { calculateResults, initialDeal } from "../src/composables/useDealCalculator";
+import { calculateResults, initialDeal, normalizeSemiannualPropertyTaxes } from "../src/composables/useDealCalculator";
 
 describe("deal calculator", () => {
-  it("calculates the recovered default deal", () => {
+  it("normalizes semiannual property taxes", () => {
+    expect(normalizeSemiannualPropertyTaxes(1860)).toBe(310);
+    expect(normalizeSemiannualPropertyTaxes(0)).toBe(0);
+  });
+
+  it("calculates the default deal with equivalent economics", () => {
     const result = calculateResults(initialDeal);
     expect(result.cashFlow).toBeCloseTo(255.25, 1);
     expect(result.annualNoi).toBeCloseTo(18318, 0);
@@ -10,6 +15,13 @@ describe("deal calculator", () => {
     expect(result.coc).toBeCloseTo(5.37, 2);
     expect(result.dscr).toBeCloseTo(1.20, 2);
     expect(result.score).toBe(76);
+  });
+
+  it("handles zero semiannual property taxes", () => {
+    const withTaxes = calculateResults(initialDeal);
+    const withoutTaxes = calculateResults({ ...initialDeal, semiannualPropertyTaxes: 0 });
+    expect(withoutTaxes.cashFlow - withTaxes.cashFlow).toBeCloseTo(310, 8);
+    expect(Object.values(withoutTaxes).every(Number.isFinite)).toBe(true);
   });
 
   it("uses the zero-interest mortgage branch", () => {

@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 
 export type DealInputs = {
   purchasePrice: number; downPayment: number; interestRate: number; loanTerm: number;
-  monthlyRent: number; propertyTaxes: number; insurance: number; maintenance: number;
+  monthlyRent: number; semiannualPropertyTaxes: number; insurance: number; maintenance: number;
   vacancy: number; management: number; hoa: number; repairs: number;
 };
 
@@ -10,7 +10,7 @@ export type DealResults = { cashFlow: number; annualNoi: number; capRate: number
 
 export const initialDeal: DealInputs = {
   purchasePrice: 245000, downPayment: 49000, interestRate: 6.75, loanTerm: 30,
-  monthlyRent: 2450, propertyTaxes: 310, insurance: 145, maintenance: 150,
+  monthlyRent: 2450, semiannualPropertyTaxes: 1860, insurance: 145, maintenance: 150,
   vacancy: 5, management: 8, hoa: 0, repairs: 8000,
 };
 
@@ -20,7 +20,7 @@ export const fields: Array<{ key: keyof DealInputs; label: string; prefix?: stri
   { key: "interestRate", label: "Interest Rate", suffix: "%", step: 0.05 },
   { key: "loanTerm", label: "Loan Term", suffix: "years", step: 1 },
   { key: "monthlyRent", label: "Monthly Rent", prefix: "$", step: 50 },
-  { key: "propertyTaxes", label: "Property Taxes", prefix: "$", suffix: "/mo", step: 10 },
+  { key: "semiannualPropertyTaxes", label: "Property Taxes (Semiannual)", prefix: "$", suffix: "/6 mo", step: 60 },
   { key: "insurance", label: "Insurance", prefix: "$", suffix: "/mo", step: 5 },
   { key: "maintenance", label: "Maintenance", prefix: "$", suffix: "/mo", step: 10 },
   { key: "vacancy", label: "Vacancy", suffix: "%", step: 0.5 },
@@ -28,6 +28,10 @@ export const fields: Array<{ key: keyof DealInputs; label: string; prefix?: stri
   { key: "hoa", label: "HOA", prefix: "$", suffix: "/mo", step: 10 },
   { key: "repairs", label: "Upfront Repairs", prefix: "$", step: 500 },
 ];
+
+export function normalizeSemiannualPropertyTaxes(value: number): number {
+  return value / 6;
+}
 
 export function calculateResults(d: DealInputs): DealResults {
   const loan = Math.max(d.purchasePrice - d.downPayment, 0);
@@ -39,7 +43,8 @@ export function calculateResults(d: DealInputs): DealResults {
     : loan / payments : 0;
   const vacancyCost = d.monthlyRent * d.vacancy / 100;
   const managementCost = d.monthlyRent * d.management / 100;
-  const operatingExpenses = d.propertyTaxes + d.insurance + d.maintenance + d.hoa + vacancyCost + managementCost;
+  const monthlyPropertyTaxes = normalizeSemiannualPropertyTaxes(d.semiannualPropertyTaxes);
+  const operatingExpenses = monthlyPropertyTaxes + d.insurance + d.maintenance + d.hoa + vacancyCost + managementCost;
   const monthlyNoi = d.monthlyRent - operatingExpenses;
   const cashFlow = monthlyNoi - mortgage;
   const annualNoi = monthlyNoi * 12;
